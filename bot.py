@@ -60,6 +60,10 @@ while True:
                         img_url = 'https://meteoinfo.ru/hmc-input/egmb/egmb.png'
                         pic_url = '{0}?a={1}'.format(img_url, timestamp)
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Карта прогноза погоды\nДля вызова легенды карты воспользуйтесь !легенда', 'attachment': photo(save_img(pic_url)), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!легенда':
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message':'Легенда карты для !карта', 'attachment': photo(save_img('https://meteoinfo.ru/hmc-input/legend.jpg')), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!инфо':
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -79,6 +83,10 @@ while True:
                         img_url = 'https://meteoinfo.ru/hmc-input/egmb/egmb.png'
                         pic_url = '{0}?a={1}'.format(img_url, timestamp)
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Карта прогноза погоды\nДля вызова легенды карты воспользуйтесь !легенда', 'attachment': photo(save_img(pic_url)), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!легенда':
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message':'Легенда карты для !карта', 'attachment': photo(save_img('https://meteoinfo.ru/hmc-input/legend.jpg')), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!инфо':
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
