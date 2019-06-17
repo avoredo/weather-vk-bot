@@ -23,7 +23,7 @@ text_info = 'Зелёный - оповещения о погоде не треб
 
 def save_img(url):
     img_data = requests.get(url).content
-    f = 'img' + str(time.time()) + '.jpg'
+    f = 'images/img' + str(time.time()) + '.jpg'
     with open(f, 'wb') as handler:
         handler.write(img_data)
     return(f)
