@@ -8,6 +8,7 @@ from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
 from weather import data
+from forecast import nowcast
 
 vk = vk_api.VkApi(token=token())
 vk._auth_token()
@@ -16,10 +17,9 @@ vk.get_api()
 
 longpoll = VkBotLongPoll(vk, group())
 
-commands = 'Список команд:\n!чек Ваш_город - Проверить предупреждения по вашей области\n!цфо - Сводка прогнозов по ЦФО\n!карта - Прогностическая карта\n!инфо - Подробности о предупрждениях\n!легенда - Легенда карты для !карта'
+commands = 'Список команд:\n!чек Ваш_город - Проверить предупреждения по вашей области\n!погода + метка на карте - Текущая погода в этом месте\n!цфо - Сводка прогнозов по ЦФО\n!карта - Прогностическая карта\n!инфо - Подробности о предупрждениях\n!легенда - Легенда карты для !карта'
 
-text_info = 'Зелёный - оповещения о погоде не требуется\n\nЖёлтый - погода потенциально опасна\n\nОранжевый - погода опасна. Имеется вероятность стихийных бедствий, нанесения ущерба\n\n \
-             Красный - погода очень опасна. Имеется вероятность крупных разрушений и катастроф'
+text_info = 'Зелёный - оповещения о погоде не требуется\n\nЖёлтый - погода потенциально опасна\n\nОранжевый - погода опасна. Имеется вероятность стихийных бедствий, нанесения ущерба\n\nКрасный - погода очень опасна. Имеется вероятность крупных разрушений и катастроф'
 
 def save_img(url):
     img_data = requests.get(url).content
@@ -64,6 +64,8 @@ while True:
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message':'Легенда карты для !карта', 'attachment': photo(save_img('https://meteoinfo.ru/hmc-input/legend.jpg')), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!инфо':
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.geo and event.object.text.lower() == '!погода':
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -87,6 +89,10 @@ while True:
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message':'Легенда карты для !карта', 'attachment': photo(save_img('https://meteoinfo.ru/hmc-input/legend.jpg')), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!инфо':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.geo and event.object.text.lower() == '!погода':
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == 'ping':
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'pong', 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
