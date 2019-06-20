@@ -69,6 +69,9 @@ while True:
                     elif event.object.text.lower() == '!погода':
                         city = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower().split()[0] == '!погода':
+                        place = event.object.text.split()[1]
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -99,6 +102,9 @@ while True:
                     elif event.object.text.lower() == '!погода':
                         city = vk.method('users.get', {'user_ids':event.object.peer_id, 'fields': 'city'})[0]['city']['title']
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower().split()[0] == '!погода':
+                        place = event.object.text.split()[1]
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
