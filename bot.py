@@ -7,7 +7,7 @@ import datetime
 from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
-from check import data
+from check import check
 from forecast import nowcast
 
 vk = vk_api.VkApi(token=token())
@@ -46,7 +46,7 @@ while True:
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!чек':
                         place = event.object.text.lower().split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': data(place), 'random_id': random.randint(-2147483648, 2147483647)})   
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})   
                     elif event.object.text.lower() == '!цфо':
                         timestamp = datetime.datetime.now().isoformat()
                         img_url = 'https://meteoinfo.ru/hmc-input/cfo/cfo_1.png'
@@ -71,7 +71,7 @@ while True:
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!чек':
                         place = event.object.text.lower().split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': data(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!цфо':
                         timestamp = datetime.datetime.now().isoformat()
                         img_url = 'https://meteoinfo.ru/hmc-input/cfo/cfo_1.png'
