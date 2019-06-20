@@ -8,7 +8,7 @@ from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
 from check import check
-from forecast import nowcast
+from weather import nowcast
 
 vk = vk_api.VkApi(token=token())
 vk._auth_token()
