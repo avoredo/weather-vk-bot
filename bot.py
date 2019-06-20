@@ -8,14 +8,14 @@ from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
 from check import check
-from weather import nowcast
+from weather import *
 
-vk = vk_api.VkApi(token=token())
+vk = vk_api.VkApi(token=token()) # token() - получать в разделе "Работа с API" -> Ключ доступа
 vk._auth_token()
 
 vk.get_api()
 
-longpoll = VkBotLongPoll(vk, group())
+longpoll = VkBotLongPoll(vk, group()) # group() - id группы
 
 commands = 'Список команд:\n!чек Ваш_город - Проверить предупреждения по вашей области\n!погода + метка на карте - Текущая погода в этом месте\n!цфо - Сводка прогнозов по ЦФО\n!карта - Прогностическая карта\n!инфо - Подробности о предупрждениях\n!легенда - Легенда карты для !карта'
 
@@ -65,7 +65,10 @@ while True:
                     elif event.object.text.lower() == '!инфо':
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.geo and event.object.text.lower() == '!погода':
-                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_coords(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!погода':
+                        city = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
+                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -90,9 +93,12 @@ while True:
                     elif event.object.text.lower() == '!инфо':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': text_info, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.geo and event.object.text.lower() == '!погода':
-                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_coords(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == 'ping':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'pong', 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!погода':
+                        city = vk.method('users.get', {'user_ids':event.object.peer_id, 'fields': 'city'})[0]['city']['title']
+                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
