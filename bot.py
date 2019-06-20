@@ -7,7 +7,7 @@ import datetime
 from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
-from weather import data
+from check import data
 from forecast import nowcast
 
 vk = vk_api.VkApi(token=token())
