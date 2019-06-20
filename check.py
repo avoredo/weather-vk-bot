@@ -3,10 +3,15 @@ import time
 import requests
 import os
 import locale
+import pytz
 
-# locale.setlocale(locale.LC_TIME, 'ru_RU')
-# os.environ['TZ'] = 'Europe/Moscow'                                          
-# time.tzset()
+try:
+      locale.setlocale(locale.LC_TIME, 'ru_RU')
+except:
+      locale.setlocale(locale.LC_ALL, '')
+#  os.environ['TZ'] = 'Europe/Moscow'                                          
+#  time.tzset()
+
 
 def check(place):
     url = 'https://meteoinfo.ru/hmc-output/meteoalert/map_fed_data.php'
