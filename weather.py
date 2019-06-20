@@ -40,7 +40,7 @@ def nowcast_coords(lat, long):
     sunrise = str(time.strftime('%H:%M', time.localtime(weather.get_sunrise_time())))
     sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
     t = round(temp, 1)
-    return('🏙️ В городе ' + location + ' сейчас:\n🌡️ ' + str(t) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %\n 🌅 Восход солнца: ' + sunrise + '\n 🌇 Закат солнца: ' + sunset)
+    return('🏙️ В городе ' + location.title() + ' сейчас:\n🌡️ ' + str(t) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %\n 🌅 Восход солнца: ' + sunrise + '\n 🌇 Закат солнца: ' + sunset)
 
 def nowcast_userplace(place):
     observation = owm.weather_at_place(place)
@@ -57,4 +57,4 @@ def nowcast_userplace(place):
     sunrise = str(time.strftime('%H:%M', time.localtime(weather.get_sunrise_time())))
     sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
     t = round(temp, 1)
-    return('🏙️ В городе ' + place + ' сейчас:\n🌡️ ' + str(t) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %\n 🌅 Восход солнца: ' + sunrise + '\n 🌇 Закат солнца: ' + sunset)
+    return('🏙️ В городе ' + place.title() + ' сейчас:\n🌡️ ' + str(t) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %\n 🌅 Восход солнца: ' + sunrise + '\n 🌇 Закат солнца: ' + sunset)
