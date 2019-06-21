@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 import vk_api
 import random
@@ -8,7 +9,7 @@ from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
 from check import check
-from weather import *
+from weather import nowcast_coords, nowcast_userplace
 
 vk = vk_api.VkApi(token=token()) # token() - получать в разделе "Работа с API" -> Ключ доступа
 vk._auth_token()
@@ -17,7 +18,7 @@ vk.get_api()
 
 longpoll = VkBotLongPoll(vk, group()) # group() - id группы
 
-commands = 'Список команд:\n!чек Ваш_город - Проверить предупреждения по вашей области\n!погода + метка на карте - Текущая погода в этом месте\n!цфо - Сводка прогнозов по ЦФО\n!карта - Прогностическая карта\n!инфо - Подробности о предупрждениях\n!легенда - Легенда карты для !карта'
+commands = 'Список команд:\n!чек Ваш_город - Проверить предупреждения по вашей области\n!погода + метка на карте - Текущая погода в этом месте\n!погода ваш_город - Текущая погода в месте, который вы указали в сообщении\n!погода - Текущая погода по городу, установленному в Вашем профиле VK (в сообщении место указывать не нужно)\n!цфо - Сводка прогнозов по ЦФО\n!карта - Прогностическая карта\n!инфо - Подробности о предупрждениях\n!легенда - Легенда карты для !карта'
 
 text_info = 'Зелёный - оповещения о погоде не требуется\n\nЖёлтый - погода потенциально опасна\n\nОранжевый - погода опасна. Имеется вероятность стихийных бедствий, нанесения ущерба\n\nКрасный - погода очень опасна. Имеется вероятность крупных разрушений и катастроф'
 
@@ -45,8 +46,11 @@ while True:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!чек':
-                        place = event.object.text.lower().split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})   
+                        try:
+                            place = event.object.text.lower().split()[1]
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!цфо':
                         timestamp = datetime.datetime.now().isoformat()
                         img_url = 'https://meteoinfo.ru/hmc-input/cfo/cfo_1.png'
@@ -70,14 +74,20 @@ while True:
                         city = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
-                        place = event.object.text.split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        try:
+                            place =' '.join(map(str,event.object.text.split()[1:]) )
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!чек':
-                        place = event.object.text.lower().split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        try:
+                            place = event.object.text.lower().split()[1]
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!цфо':
                         timestamp = datetime.datetime.now().isoformat()
                         img_url = 'https://meteoinfo.ru/hmc-input/cfo/cfo_1.png'
@@ -103,8 +113,11 @@ while True:
                         city = vk.method('users.get', {'user_ids':event.object.peer_id, 'fields': 'city'})[0]['city']['title']
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
-                        place = event.object.text.split()[1]
-                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        try:
+                            place =' '.join(map(str,event.object.text.split()[1:]) )
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})                    
     except Exception as e:
         print(e)
         time.sleep(1)
