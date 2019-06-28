@@ -63,7 +63,7 @@ def nowcast_userplace(place):
 def tommorow_forecast_userplace(place):
     forecaster = owm.three_hours_forecast(place)
     tommorow = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())), "%d.%m.%Y").timestamp()
-    text = ['Прогноз погоды в городе ' + place + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(tommorow)))]
+    text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(tommorow)))]
     for i in range(4):
         t = int(tommorow + ((i + 1) * 21600))
         weather = forecaster.get_weather_at(t)
