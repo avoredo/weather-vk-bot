@@ -42,6 +42,7 @@ while True:
     try:
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
+                # для работы в беседах
                 if event.object.peer_id != event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -78,7 +79,7 @@ while True:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !погода Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
                         try:
-                            place =' '.join(map(str,event.object.text.split()[1:]) )
+                            place =' '.join(map(str,event.object.text.split()[1:]))
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
                         except:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})
@@ -88,6 +89,13 @@ while True:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
                         except:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !прогноз Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif ' '.join(event.object.text.lower().split()[:2]) == '!прогноз завтра':
+                        try:
+                            place =' '.join(map(str,event.object.text.split()[2:]))
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})
+                # для работы в личных сообщениях
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -126,7 +134,7 @@ while True:
                             vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !погода Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
                         try:
-                            place =' '.join(map(str,event.object.text.split()[1:]) )
+                            place =' '.join(map(str,event.object.text.split()[1:]))
                             vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
                         except:
                             vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)}) 
@@ -136,6 +144,12 @@ while True:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
                         except:
                             vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !прогноз Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif ' '.join(event.object.text.lower().split()[:2]) == '!прогноз завтра':
+                        try:
+                            place =' '.join(map(str,event.object.text.split()[2:]))
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
