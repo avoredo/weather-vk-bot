@@ -79,3 +79,21 @@ def tommorow_forecast_userplace(place):
         text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
     return '\n\n'.join(text)
 
+def tommorow_forecast_coords(lat, long):
+    forecaster = owm.three_hours_forecast_at_coords(lat, long)
+    tommorow = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())), "%d.%m.%Y").timestamp()
+    text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(tommorow)))]
+    for i in range(4):
+        t = int(tommorow + ((i + 1) * 21600))
+        weather = forecaster.get_weather_at(t)
+        temperature = round((weather.get_temperature('celsius')['temp']), 1)
+        status = weather.get_detailed_status()
+        try:
+            wind_direction = wind(weather.get_wind()['deg'])
+        except:
+            wind_direction = wind(0)
+        wind_speed = str(round(weather.get_wind()['speed'], 1))
+        pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
+        humidity = str(weather.get_humidity())
+        text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+    return '\n\n'.join(text)
