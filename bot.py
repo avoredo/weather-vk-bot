@@ -9,7 +9,7 @@ from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
 from check import check
-from weather import nowcast_coords, nowcast_userplace
+from weather import *
 
 vk = vk_api.VkApi(token=token()) # token() - получать в разделе "Работа с API" -> Ключ доступа
 vk._auth_token()
@@ -71,14 +71,23 @@ while True:
                     elif event.object.geo and event.object.text.lower() == '!погода':
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_coords(event.object.geo['coordinates']['latitude'], event.object.geo['coordinates']['longitude']), 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!погода':
-                        city = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
-                        vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                        try:
+                            city = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !погода Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
                         try:
                             place =' '.join(map(str,event.object.text.split()[1:]) )
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
                         except:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})
+                    elif event.object.text.lower() == '!прогноз завтра':
+                        try:
+                            place = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !прогноз Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
                 elif event.object.peer_id == event.object.from_id:
                     if event.object.text.lower() == '!команды':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
@@ -110,14 +119,23 @@ while True:
                     elif event.object.text.lower() == 'ping':
                         vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'pong', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower() == '!погода':
-                        city = vk.method('users.get', {'user_ids':event.object.peer_id, 'fields': 'city'})[0]['city']['title']
-                        vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                        try:
+                            city = vk.method('users.get', {'user_ids':event.object.peer_id, 'fields': 'city'})[0]['city']['title']
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(city), 'random_id': random.randint(-2147483648, 2147483647)})
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !погода Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!погода':
                         try:
                             place =' '.join(map(str,event.object.text.split()[1:]) )
                             vk.method('messages.send', {'peer_id': event.object.from_id, 'message': nowcast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})
                         except:
-                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)})                    
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'Место не найдено, повторите запрос', 'random_id': random.randint(-2147483648, 2147483647)}) 
+                    elif event.object.text.lower() == '!прогноз завтра':
+                        try:
+                            place = vk.method('users.get', {'user_ids':event.object.from_id, 'fields': 'city'})[0]['city']['title']
+                            vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': tommorow_forecast_userplace(place), 'random_id': random.randint(-2147483648, 2147483647)})  
+                        except:
+                            vk.method('messages.send', {'peer_id': event.object.from_id, 'message': 'В вашем профиле не указан город, пожалуйста введите его вручную используя !прогноз Ваш_город', 'random_id': random.randint(-2147483648, 2147483647)})
     except Exception as e:
         print(e)
         time.sleep(1)
