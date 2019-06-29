@@ -177,7 +177,6 @@ def today_forecast_coords(lat, long):
     forecaster = owm.three_hours_forecast_at_coords(lat, long)
     nowtime = int(time.strftime('%H', time.localtime()))
     if nowtime < 6:
-        print('1')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp()
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(4):
@@ -195,7 +194,6 @@ def today_forecast_coords(lat, long):
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 12:
-        print('2')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + 21600
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(3):
@@ -230,7 +228,6 @@ def today_forecast_coords(lat, long):
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     else:
-        print('4')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*3)
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(1):
