@@ -5,6 +5,7 @@ import random
 import time
 import requests
 import datetime
+import os, os.path
 from vk_api import VkUpload
 from bs4 import BeautifulSoup
 from t import token, group
@@ -36,6 +37,10 @@ def photo(file):
     owner_id = save[0]["owner_id"]
     id_own = save[0]["id"]
     attachment ='photo{}_{}'.format(owner_id,id_own)
+    if os.path.exists(file):
+        os.remove(file)
+    else:
+        pass
     return attachment
 
 while True:
