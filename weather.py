@@ -1,11 +1,17 @@
 import pyowm
-from t import key
 import time
 import datetime
+import pytz
+import timezonefinder
+from geopy.geocoders import Nominatim
+from t import key, geokey
 
 owm = pyowm.OWM(key(), language='ru')
+geolocator = Nominatim(user_agent=geokey())
+tf = timezonefinder.TimezoneFinder()
 
 tm = {'1': 'Утром', '2': 'Днем', '3': 'Вечером', '4': 'Ночью'}
+
 def wind(deg):
     if(deg>337.5): 
         return 'С'
@@ -100,9 +106,11 @@ def tommorow_forecast_coords(lat, long):
 
 def today_forecast_userplace(place):
     forecaster = owm.three_hours_forecast(place)
-    nowtime = int(time.strftime('%H', time.localtime()))
+    location = geolocator.geocode(place)
+    timezone_str = tf.certain_timezone_at(lat=location.latitude, lng=location.longitude)
+    timezone = pytz.timezone(timezone_str)
+    nowtime = int(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%H'))
     if nowtime < 6:
-        print('1')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp()
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(4):
@@ -120,7 +128,6 @@ def today_forecast_userplace(place):
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 12:
-        print('2')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + 21600
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(3):
@@ -155,7 +162,6 @@ def today_forecast_userplace(place):
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     else:
-        print('4')
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*3)
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(1):
@@ -175,7 +181,9 @@ def today_forecast_userplace(place):
 
 def today_forecast_coords(lat, long):
     forecaster = owm.three_hours_forecast_at_coords(lat, long)
-    nowtime = int(time.strftime('%H', time.localtime()))
+    timezone_str = tf.certain_timezone_at(lat=lat, lng=long)
+    timezone = pytz.timezone(timezone_str)
+    nowtime = int(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%H'))
     if nowtime < 6:
         today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp()
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
