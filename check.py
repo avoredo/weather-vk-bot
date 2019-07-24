@@ -9,9 +9,6 @@ try:
       locale.setlocale(locale.LC_TIME, 'ru_RU')
 except:
       locale.setlocale(locale.LC_ALL, '')
-#  os.environ['TZ'] = 'Europe/Moscow'                                          
-#  time.tzset()
-
 
 def check(place):
     url = 'https://meteoinfo.ru/hmc-output/meteoalert/map_fed_data.php'
