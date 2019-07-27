@@ -68,7 +68,10 @@ def nowcast_userplace(place):
 
 def tommorow_forecast_userplace(place):
     forecaster = owm.three_hours_forecast(place)
-    tommorow = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())), "%d.%m.%Y").timestamp()
+    location = geolocator.geocode(place)
+    timezone_str = tf.certain_timezone_at(lat=location.latitude, lng=location.longitude)
+    timezone = pytz.timezone(timezone_str)
+    tommorow = time.mktime(time.strptime((pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone)  + datetime.timedelta(days=1)).strftime('%d.%m.%Y'), '%d.%m.%Y'))
     text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(tommorow)))]
     for i in range(4):
         t = int(tommorow + ((i + 1) * 21600))
@@ -87,7 +90,9 @@ def tommorow_forecast_userplace(place):
 
 def tommorow_forecast_coords(lat, long):
     forecaster = owm.three_hours_forecast_at_coords(lat, long)
-    tommorow = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime((datetime.datetime.now() + datetime.timedelta(days=1)).timestamp())), "%d.%m.%Y").timestamp()
+    timezone_str = tf.certain_timezone_at(lat=lat, lng=long)
+    timezone = pytz.timezone(timezone_str)
+    tommorow = time.mktime(time.strptime((pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone)  + datetime.timedelta(days=1)).strftime('%d.%m.%Y'), '%d.%m.%Y'))
     text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(tommorow)))]
     for i in range(4):
         t = int(tommorow + ((i + 1) * 21600))
@@ -111,13 +116,13 @@ def today_forecast_userplace(place):
     timezone = pytz.timezone(timezone_str)
     nowtime = int(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%H'))
     if nowtime < 6:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp()
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple())
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(4):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
-            status = weather.get_detailed_status()
+            status = weather.get_detailed_status()  
             try:
                 wind_direction = wind(weather.get_wind()['deg'])
             except:
@@ -128,7 +133,7 @@ def today_forecast_userplace(place):
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 12:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + 21600
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + 21600
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(3):
             t = int(today + ((i + 1) * 21600))
@@ -145,7 +150,7 @@ def today_forecast_userplace(place):
             text.append(tm[str(i+2)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 18:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*2)
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*2)
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(2):
             t = int(today + ((i + 1) * 21600))
@@ -162,7 +167,7 @@ def today_forecast_userplace(place):
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     else:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*3)
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*3)
         text = ['Прогноз погоды в городе ' + place.title() + ' на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(1):
             t = int(today + ((i + 1) * 21600))
@@ -185,7 +190,7 @@ def today_forecast_coords(lat, long):
     timezone = pytz.timezone(timezone_str)
     nowtime = int(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%H'))
     if nowtime < 6:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp()
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple())
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(4):
             t = int(today + ((i + 1) * 21600))
@@ -202,7 +207,7 @@ def today_forecast_coords(lat, long):
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 12:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + 21600
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + 21600
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(3):
             t = int(today + ((i + 1) * 21600))
@@ -219,7 +224,7 @@ def today_forecast_coords(lat, long):
             text.append(tm[str(i+2)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     elif nowtime < 18:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*2)
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*2)
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(2):
             t = int(today + ((i + 1) * 21600))
@@ -236,7 +241,7 @@ def today_forecast_coords(lat, long):
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
         return '\n\n'.join(text)
     else:
-        today = datetime.datetime.strptime(time.strftime('%d.%m.%Y', time.localtime()), "%d.%m.%Y").timestamp() + (21600*3)
+        today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*3)
         text = ['Прогноз погоды в этом месте на ' + str(time.strftime('%d.%m.%y', time.localtime(today)))]
         for i in range(1):
             t = int(today + ((i + 1) * 21600))
