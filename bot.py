@@ -53,7 +53,7 @@ while True:
                         vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': commands, 'random_id': random.randint(-2147483648, 2147483647)})
                     elif event.object.text.lower().split()[0] == '!чек':
                         try:
-                            place =' '.join(map(str,event.object.text.split()[1:]))
+                            place =' '.join(map(str,event.object.text.split()[1:])).lower()
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': check(place), 'random_id': random.randint(-2147483648, 2147483647)})
                         except:
                             vk.method('messages.send', {'peer_id': event.object.peer_id, 'message': 'Место не найдено', 'random_id': random.randint(-2147483648, 2147483647)})
