@@ -121,6 +121,8 @@ def today_forecast_userplace(place):
         for i in range(4):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunrise = str(time.strftime('%H:%M', time.localtime(weather.get_sunrise_time())))
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()  
             try:
@@ -131,6 +133,8 @@ def today_forecast_userplace(place):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+        text.append('🌅 Солнце взойдет в ' + sunrise)
+        text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     elif nowtime < 12:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + 21600
@@ -138,6 +142,7 @@ def today_forecast_userplace(place):
         for i in range(3):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -148,6 +153,7 @@ def today_forecast_userplace(place):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+2)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+        text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     elif nowtime < 18:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*2)
@@ -155,6 +161,7 @@ def today_forecast_userplace(place):
         for i in range(2):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -165,6 +172,7 @@ def today_forecast_userplace(place):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+        text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     else:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*3)
@@ -172,6 +180,7 @@ def today_forecast_userplace(place):
         for i in range(1):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -182,6 +191,7 @@ def today_forecast_userplace(place):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+4)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+        text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
 
 def today_forecast_coords(lat, long):
@@ -195,6 +205,8 @@ def today_forecast_coords(lat, long):
         for i in range(4):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunrise = str(time.strftime('%H:%M', time.localtime(weather.get_sunrise_time())))
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -205,6 +217,8 @@ def today_forecast_coords(lat, long):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+1)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+            text.append('🌅 Солнце взойдет в ' + sunrise)
+        text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     elif nowtime < 12:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + 21600
@@ -212,6 +226,7 @@ def today_forecast_coords(lat, long):
         for i in range(3):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -222,6 +237,7 @@ def today_forecast_coords(lat, long):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+2)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+            text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     elif nowtime < 18:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*2)
@@ -229,6 +245,7 @@ def today_forecast_coords(lat, long):
         for i in range(2):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -239,6 +256,7 @@ def today_forecast_coords(lat, long):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+3)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+            text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)
     else:
         today = time.mktime(datetime.datetime.strptime(pytz.utc.localize(datetime.datetime.utcnow(), is_dst=None).astimezone(timezone).strftime('%d.%m.%Y'), "%d.%m.%Y").timetuple()) + (21600*3)
@@ -246,6 +264,7 @@ def today_forecast_coords(lat, long):
         for i in range(1):
             t = int(today + ((i + 1) * 21600))
             weather = forecaster.get_weather_at(t)
+            sunset = str(time.strftime('%H:%M', time.localtime(weather.get_sunset_time())))
             temperature = round((weather.get_temperature('celsius')['temp']), 1)
             status = weather.get_detailed_status()
             try:
@@ -256,5 +275,6 @@ def today_forecast_coords(lat, long):
             pressure = str(round(0.7500616827 * weather.get_pressure()['press']))
             humidity = str(weather.get_humidity())
             text.append(tm[str(i+4)] + '\n️🌡️ ' + str(temperature) + ' °C, ' + status + '.\n💨 Ветер ' + wind_speed + ' м/с, ' + wind_direction + '\n⛱️ Давление ' + pressure + ' мм рт. ст.\n💧 Влажность ' + humidity + ' %')
+            text.append('🌇 Солнце скроется за горизонтом в ' + sunset)
         return '\n\n'.join(text)  
 
